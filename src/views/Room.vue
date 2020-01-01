@@ -1,5 +1,5 @@
 <template>
-	<div class="room" @mousemove="moveMouse" @mouseup="deselectProp">
+	<div class="room" @mousemove="moveMouse" @mouseup="deselectProp" draggable="false">
 		<Prop
 			v-for="(prop,idx) in propList"
 			:key="idx"

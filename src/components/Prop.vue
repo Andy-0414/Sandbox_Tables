@@ -1,5 +1,5 @@
 <template>
-	<div class="prop" @mousedown="$emit('mousedown',$event)"></div>
+	<div draggable="false" class="prop" @mousedown="$emit('mousedown',$event)"></div>
 </template>
 
 <script lang="ts">
