@@ -1,5 +1,5 @@
 <template>
-	<div class="prop" @click="$emit('click',$event)"></div>
+	<div class="prop" @mousedown="$emit('mousedown',$event)"></div>
 </template>
 
 <script lang="ts">
@@ -27,6 +27,13 @@ export default Vue.extend({
 	methods: {
 		render() {
 			let propElement: HTMLDivElement = this.$el as HTMLDivElement;
+			if (this.propData.isGrap) {
+				propElement.style.boxShadow = `0px 10px 5px rgba(0,0,0,0.2)`;
+				propElement.style.transform = `translateY(-10px)`;
+			} else {
+				propElement.style.boxShadow = `0px 0px 5px rgba(0,0,0,0.2)`;
+				propElement.style.transform = `translateY(0px)`;
+			}
 			propElement.style.left = `${this.propData.position.x}px`;
 			propElement.style.top = `${this.propData.position.y}px`;
 		}
@@ -42,5 +49,7 @@ export default Vue.extend({
 	height: 100px;
 
 	background-color: grey;
+
+	transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1);
 }
 </style>

@@ -27,9 +27,16 @@ export class Vector2D {
 export class Prop {
 	public position: Vector2D;
 	public size: Vector2D;
+	public isGrap: boolean = false;
 
 	constructor(position?: Vector2D, size?: Vector2D) {
 		this.position = position || new Vector2D();
 		this.size = size || new Vector2D();
+	}
+	grap(): void {
+		this.isGrap = true;
+	}
+	putDown(): void {
+		this.isGrap = false;
 	}
 }

@@ -1,10 +1,10 @@
 <template>
-	<div class="room" @mousemove="moveMouse">
+	<div class="room" @mousemove="moveMouse" @mouseup="deselectProp">
 		<Prop
 			v-for="(prop,idx) in propList"
 			:key="idx"
 			v-model="propList[idx]"
-			@click="selectProp($event,idx)"
+			@mousedown="selectProp($event,idx)"
 		></Prop>
 	</div>
 </template>
@@ -20,9 +20,11 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			propList: [new Prop()] as Prop[],
+			propList: [new Prop(), new Prop(), new Prop()] as Prop[],
 
-			currentProp: null as null | Prop
+			currentProp: null as null | Prop,
+			currentOffsetX: 0 as number,
+			currentOffsetY: 0 as number
 		};
 	},
 	watch: {
@@ -30,11 +32,25 @@ export default Vue.extend({
 	},
 	methods: {
 		selectProp(e: MouseEvent, idx: number) {
-			this.currentProp = this.propList[idx];
+			if (!this.propList[idx].isGrap) {
+				this.currentProp = this.propList[idx];
+				this.currentProp.grap();
+				this.currentOffsetX = e.offsetX;
+				this.currentOffsetY = e.offsetY;
+			}
+		},
+		deselectProp(e: MouseEvent) {
+			if (this.currentProp) {
+				this.currentProp!.putDown();
+			}
+			this.currentProp = null;
 		},
 		moveMouse(e: MouseEvent) {
 			if (this.currentProp) {
-				this.currentProp.position.setVector2D(e.clientX, e.clientY);
+				this.currentProp.position.setVector2D(
+					e.clientX - this.currentOffsetX,
+					e.clientY - this.currentOffsetY
+				);
 			}
 		}
 	}
@@ -43,8 +59,9 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .room {
-    width: 100vw;
-    height: 100vh;
+	touch-action: none;
+	width: 100vw;
+	height: 100vh;
 	position: relative;
 }
 </style>
