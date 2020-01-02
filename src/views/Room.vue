@@ -24,25 +24,15 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			propList: [
-				new Card(
-					require("@/assets/cards/queen_of_diamonds.png"),
-					require("@/assets/cards/back.png"),
-					new Vector2D(10, 10),
-					new Vector2D(100, 145)
-				),
-				new Card(
-					require("@/assets/cards/queen_of_diamonds.png"),
-					require("@/assets/cards/back.png"),
-					new Vector2D(10, 10),
-					new Vector2D(100, 145)
-				)
-			] as Prop[],
+			propList: Card.createTrumpCardPack() as Prop[],
 
 			currentProp: null as null | Prop,
 			currentOffsetX: 0 as number,
 			currentOffsetY: 0 as number
 		};
+	},
+	created() {
+		console.log(Prop.createUUID());
 	},
 	watch: {
 		propList: {
@@ -55,6 +45,9 @@ export default Vue.extend({
 	methods: {
 		selectProp(e: MouseEvent, idx: number) {
 			if (!this.propList[idx].isGrap) {
+				this.propList.forEach(prop => {
+					prop.zIndex--;
+				});
 				this.currentProp = this.propList[idx];
 				this.currentProp.grap();
 				this.currentOffsetX = e.offsetX;

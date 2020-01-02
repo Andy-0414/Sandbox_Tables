@@ -42,6 +42,7 @@ export default Vue.extend({
 
 			propElement.style.backgroundImage = `url(${this.propData.getImage()})`;
 			propElement.style.transform = this.propData.getTransform();
+			propElement.style.zIndex = this.propData.zIndex.toString();
 		}
 	}
 });
