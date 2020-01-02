@@ -39,5 +39,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .card {
+    background-color: white;
+    border-radius: 5px;
 }
 </style>

@@ -54,7 +54,7 @@ export default Vue.extend({
 	width: 100px;
 	height: 100px;
 
-	transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1);
+	transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1);
 	background-size: cover;
 }
 </style>

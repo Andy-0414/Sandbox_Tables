@@ -26,10 +26,16 @@ export default Vue.extend({
 		return {
 			propList: [
 				new Card(
-					"https://i1.wp.com/kaist-valuecreator.com/wp-content/uploads/2019/09/25p_%EA%B5%AC%EA%B8%80%EB%A1%9C%EA%B3%A0-2.jpg?w=720&ssl=1",
-					"http://www.bloter.net/wp-content/uploads/2015/08/Google_Chrome_icon_2011.svg_-765x765.png",
+					require("@/assets/cards/queen_of_diamonds.png"),
+					require("@/assets/cards/back.png"),
 					new Vector2D(10, 10),
-					new Vector2D(200, 200)
+					new Vector2D(100, 145)
+				),
+				new Card(
+					require("@/assets/cards/queen_of_diamonds.png"),
+					require("@/assets/cards/back.png"),
+					new Vector2D(10, 10),
+					new Vector2D(100, 145)
 				)
 			] as Prop[],
 
