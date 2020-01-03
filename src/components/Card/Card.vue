@@ -32,6 +32,7 @@ export default Vue.extend({
 		},
 		reverse() {
 			this.propData.reverse();
+			this.$emit("stateChange", false);
 		}
 	}
 });
@@ -39,7 +40,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .card {
-    background-color: white;
-    border-radius: 5px;
+	background-color: white;
+	border-radius: 5px;
 }
 </style>
