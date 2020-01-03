@@ -1,3 +1,4 @@
+
 export class Vector2D {
 	public x: number;
 	public y: number;
@@ -83,6 +84,7 @@ export class Prop {
 
 		return prop;
 	}
+
 	update(data: Prop): Prop {
 		Object.assign(this, data);
 

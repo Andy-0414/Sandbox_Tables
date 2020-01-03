@@ -16,12 +16,16 @@
 import Vue from "vue";
 import PropComponent from "@/components/Prop.vue";
 import CardComponent from "@/components/Card/Card.vue";
+import PropsComponent from "@/components/Props.vue";
 import { Prop, Vector2D } from "@/components/Prop.ts";
 import { Card } from "../components/Card/Card";
+import { Props } from "../components/Props";
+import { jsonToPropObject } from "../components/JsonToPropObject";
 
 export default Vue.extend({
 	components: {
 		Prop: PropComponent,
+		Props: PropsComponent,
 		Card: CardComponent
 	},
 	data() {
@@ -36,14 +40,13 @@ export default Vue.extend({
 	sockets: {
 		game_joinRoom(this: any, data: any) {
 			this.propList = data.props.map((prop: Prop) =>
-				this.jsonToPropObject(prop)
+				jsonToPropObject(prop)
 			);
-			console.log(data.props);
 		},
 		game_propCreate(this: any, data: Prop) {
-			let prop = this.jsonToPropObject(data);
-
+			let prop = jsonToPropObject(data);
 			if (prop) this.propList.push(prop);
+			console.log(this.propList);
 		},
 		game_propUpdate(this: any, data: Card) {
 			let prop = this.propList.find((prop: Prop) => prop._id == data._id);
@@ -66,18 +69,6 @@ export default Vue.extend({
 	// 	}
 	// },
 	methods: {
-		jsonToPropObject(data: Prop) {
-			let prop;
-			switch (data.componentName) {
-				case "Prop":
-					prop = Prop.copy(data);
-					break;
-				case "Card":
-					prop = Card.copy(data);
-					break;
-			}
-			return prop;
-		},
 		selectProp(e: MouseEvent, idx: number) {
 			if (!this.propList[idx].isGrap) {
 				this.propList.forEach(prop => {
@@ -119,15 +110,20 @@ export default Vue.extend({
 			});
 		},
 		createCard() {
-			let card = new Card(
-				require(`@/assets/cards/2_of_diamonds.png`),
-				require("@/assets/cards/back.png"),
+			// let card = new Card(
+			// 	require(`@/assets/cards/2_of_diamonds.png`),
+			// 	require("@/assets/cards/back.png"),
+			// 	new Vector2D(100, 100),
+			// 	new Vector2D(100, 145)
+			// );
+			let props = new Props(
+				Card.createTrumpCardPack(),
 				new Vector2D(100, 100),
 				new Vector2D(100, 145)
 			);
 			this.$socket.client.emit("game_propCreate", {
 				roomName: this.getRoomName,
-				prop: card
+				prop: props
 			});
 		}
 	},

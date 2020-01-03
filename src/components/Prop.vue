@@ -1,5 +1,7 @@
 <template>
-	<div class="prop" v-on="$listeners"></div>
+	<div class="prop" v-on="$listeners">
+		<slot name="content"></slot>
+	</div>
 </template>
 
 <script lang="ts">
