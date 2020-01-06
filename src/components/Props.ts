@@ -28,14 +28,30 @@ export class Props extends Prop {
 	pop(): Prop | undefined {
 		let prop = this.props.pop();
 		if (prop) {
-			prop.position = this.position;
+			Object.assign(prop.position,this.position);
 			return prop;
 		} else {
 			return undefined;
 		}
 	}
+	spread(count: number): Prop[] {
+		let result: Prop[] = [];
+		let prop: Prop | undefined = undefined;
+		for (let i = 0; i < count; i++) {
+			prop = this.pop();
+			if (prop) {
+				prop.position.x = this.position.x + i * 20;
+				result.push(prop);
+			}
+		}
+		return result;
+	}
+	shuffle() {
+		this.props = this.props.sort(() => Math.random() - 0.5);
+	}
 
 	getImage(): string {
-		return this.props[this.props.length - 1].getImage();
+		if (this.props.length > 0) return this.props[this.props.length - 1].getImage();
+		else return "";
 	}
 }

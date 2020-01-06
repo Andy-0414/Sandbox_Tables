@@ -1,19 +1,29 @@
 <template>
 	<div class="room">
-		<div class="room__props" @mousemove="moveMouse" @mouseup="deselectProp" draggable="false">
+		<div
+			class="room__props"
+			@mousemove="moveMouse"
+			@touchmove="moveMouse"
+			@mouseup="deselectProp"
+			@touchend="deselectProp"
+			draggable="false"
+		>
 			<component
 				:is="prop.componentName"
 				v-for="(prop,idx) in propList"
 				:key="prop._id"
 				v-model="propList[idx]"
 				@mousedown="selectProp($event,idx)"
+				@touchstart="selectProp($event,idx)"
 				@stateChange="propUpdate(prop)"
 			/>
 			<button @click="createCard">카드 생성</button>
 			<div
 				class="room__myhand"
-				@mouseup="deselectPropAndAppendMyHands"
 				@mousemove="moveMouse"
+				@touchmove="moveMouse"
+				@mouseup="deselectPropAndAppendMyHands"
+				@touchend="deselectPropAndAppendMyHands"
 				ref="hands"
 			>
 				<component
@@ -22,6 +32,7 @@
 					:key="prop._id"
 					v-model="myHandsPropList[idx]"
 					@mousedown="selectPropMyHands($event,idx)"
+					@touchstart="selectPropMyHands($event,idx)"
 					@stateChange="propUpdate(prop)"
 				/>
 			</div>
@@ -90,37 +101,49 @@ export default Vue.extend({
 	},
 	methods: {
 		selectProp(e: MouseEvent, idx: number) {
-			if (!this.propList[idx].isGrap) {
+			if (!this.propList[idx].isGrap && e.button != 2) {
 				this.propList.forEach(prop => {
 					prop.zIndex--;
 				});
 				this.currentProp = this.propList[idx];
 				this.currentProp.grap();
 
-				this.currentOffsetX = e.offsetX;
-				this.currentOffsetY = e.offsetY;
+				this.currentOffsetX = e.offsetX || this.currentProp.size.x / 2;
+				this.currentOffsetY = e.offsetY || this.currentProp.size.y / 2;
 				this.update();
 			}
 		},
-		selectPropMyHands(e: MouseEvent, idx: number) {
-			if (!this.myHandsPropList[idx].isGrap && e.button != 2) {
+		selectPropMyHands(e: MouseEvent | TouchEvent, idx: number) {
+			if (
+				!this.myHandsPropList[idx].isGrap &&
+				(e as MouseEvent).button != 2
+			) {
 				this.currentProp = this.myHandsPropList[idx];
 				this.myHandsPropList.splice(idx, 1);
 				this.propList.push(this.currentProp);
 
+				let cursor = (e as MouseEvent).clientX
+					? (e as MouseEvent)
+					: (e as TouchEvent).touches[0];
 				this.currentProp.position.setVector2D(
-					e.clientX - this.currentOffsetX,
-					e.clientY - this.currentOffsetY
+					cursor.clientX - this.currentOffsetX,
+					cursor.clientY - this.currentOffsetY
 				);
 				this.currentProp.grap();
-				this.currentOffsetX = e.offsetX;
-				this.currentOffsetY = e.offsetY;
+
+				this.currentOffsetX =
+					(e as MouseEvent).offsetX || this.currentProp.size.x / 2;
+				this.currentOffsetY =
+					(e as MouseEvent).offsetY || this.currentProp.size.y / 2;
+
 				this.update();
 
 				this.isHandToField = true;
 			}
 		},
 		deselectProp(e: MouseEvent) {
+			console.log(this.currentProp)
+
 			if (this.currentProp) {
 				this.currentProp!.putDown();
 				if (this.isHandToField) {
@@ -140,7 +163,7 @@ export default Vue.extend({
 			this.isHandToField = false;
 			this.currentProp = null;
 		},
-		deselectPropAndAppendMyHands(e: MouseEvent) {
+		deselectPropAndAppendMyHands(e: MouseEvent | TouchEvent) {
 			if (this.currentProp) {
 				this.currentProp!.putDown();
 				if (this.currentProp.componentName == "Card") {
@@ -164,11 +187,14 @@ export default Vue.extend({
 			this.isHandToField = false;
 			this.currentProp = null;
 		},
-		moveMouse(e: MouseEvent) {
+		moveMouse(e: MouseEvent | TouchEvent) {
 			if (this.currentProp) {
+				let cursor = (e as MouseEvent).clientX
+					? (e as MouseEvent)
+					: (e as TouchEvent).touches[0];
 				this.currentProp.position.setVector2D(
-					e.clientX - this.currentOffsetX,
-					e.clientY - this.currentOffsetY
+					cursor.clientX - this.currentOffsetX,
+					cursor.clientY - this.currentOffsetY
 				);
 				this.update();
 			}
@@ -208,6 +234,7 @@ export default Vue.extend({
 			this.myHandsPropList.forEach((card, idx) => {
 				let hands = this.$refs.hands as HTMLDivElement;
 				let len = this.myHandsPropList.length;
+				card.isReverse = true;
 				card.position.setVector2D(
 					hands.clientWidth / 2 + (len / 2 - (idx + 1)) * card.size.x,
 					-card.size.y / 2

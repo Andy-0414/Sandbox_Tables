@@ -1,5 +1,9 @@
 <template>
-	<Prop @contextmenu="reverse" class="card" v-model="propData" v-on="$listeners"></Prop>
+	<Prop @dblclick="reverse" class="card" v-model="propData" v-on="$listeners">
+		<template slot="menu">
+			<div class="prop__menu__item" @click="reverse">뒤집기</div>
+		</template>
+	</Prop>
 </template>
 
 <script lang="ts">
