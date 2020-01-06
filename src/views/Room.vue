@@ -10,7 +10,12 @@
 				@stateChange="propUpdate(prop)"
 			/>
 			<button @click="createCard">카드 생성</button>
-			<div class="room__myhand" @mouseup="deselectPropAndAppendMyHands" @mousemove="moveMouse">
+			<div
+				class="room__myhand"
+				@mouseup="deselectPropAndAppendMyHands"
+				@mousemove="moveMouse"
+				ref="hands"
+			>
 				<component
 					:is="prop.componentName"
 					v-for="(prop,idx) in myHandsPropList"
@@ -140,11 +145,19 @@ export default Vue.extend({
 				this.currentProp!.putDown();
 				if (this.currentProp.componentName == "Card") {
 					this.myHandsPropList.push(this.currentProp as Card);
-
-					this.$socket.client.emit("game_propDelete", {
-						roomName: this.getRoomName,
-						prop: this.currentProp
-					});
+					if (!this.isHandToField) {
+						this.$socket.client.emit("game_propDelete", {
+							roomName: this.getRoomName,
+							prop: this.currentProp
+						});
+					} else {
+						this.propList.splice(
+							this.propList.findIndex(
+								prop => this.currentProp!._id == prop._id
+							),
+							1
+						);
+					}
 				}
 				this.update();
 			}
@@ -193,8 +206,12 @@ export default Vue.extend({
 	watch: {
 		myHandsPropList() {
 			this.myHandsPropList.forEach((card, idx) => {
+				let hands = this.$refs.hands as HTMLDivElement;
 				let len = this.myHandsPropList.length;
-				card.position.setVector2D(idx * card.size.x, -card.size.y / 2);
+				card.position.setVector2D(
+					hands.clientWidth / 2 + (len / 2 - (idx + 1)) * card.size.x,
+					-card.size.y / 2
+				);
 			});
 		}
 	},
@@ -228,8 +245,9 @@ export default Vue.extend({
 	width: 800px;
 	height: 100px;
 
-	border: 1px solid grey;
-	background: none;
+	border: 1px solid white;
+	background-color: rgba(255, 255, 255, 0.2);
+	border-radius: 100px 100px 0 0;
 
 	z-index: 10000;
 }
