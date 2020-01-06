@@ -1,5 +1,5 @@
 <template>
-	<Prop @dblclick="reverse" class="card" v-model="propData" v-on="$listeners"></Prop>
+	<Prop @contextmenu="reverse" class="card" v-model="propData" v-on="$listeners"></Prop>
 </template>
 
 <script lang="ts">
@@ -30,7 +30,8 @@ export default Vue.extend({
 		render() {
 			let propElement: HTMLDivElement = this.$el as HTMLDivElement;
 		},
-		reverse() {
+		reverse(e: MouseEvent) {
+			e.preventDefault();
 			this.propData.reverse();
 			this.$emit("stateChange", false);
 		}

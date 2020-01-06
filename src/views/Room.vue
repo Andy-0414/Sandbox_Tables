@@ -1,14 +1,26 @@
 <template>
-	<div class="room" @mousemove="moveMouse" @mouseup="deselectProp" draggable="false">
-		<button @click="createCard">카드 생성</button>
-		<component
-			:is="prop.componentName"
-			v-for="(prop,idx) in propList"
-			:key="idx"
-			v-model="propList[idx]"
-			@mousedown="selectProp($event,idx)"
-			@stateChange="propUpdate(prop)"
-		/>
+	<div class="room">
+		<div class="room__props" @mousemove="moveMouse" @mouseup="deselectProp" draggable="false">
+			<component
+				:is="prop.componentName"
+				v-for="(prop,idx) in propList"
+				:key="prop._id"
+				v-model="propList[idx]"
+				@mousedown="selectProp($event,idx)"
+				@stateChange="propUpdate(prop)"
+			/>
+			<button @click="createCard">카드 생성</button>
+			<div class="room__myhand" @mouseup="deselectPropAndAppendMyHands" @mousemove="moveMouse">
+				<component
+					:is="prop.componentName"
+					v-for="(prop,idx) in myHandsPropList"
+					:key="prop._id"
+					v-model="myHandsPropList[idx]"
+					@mousedown="selectPropMyHands($event,idx)"
+					@stateChange="propUpdate(prop)"
+				/>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -31,8 +43,10 @@ export default Vue.extend({
 	data() {
 		return {
 			propList: [] as Prop[],
+			myHandsPropList: [] as Card[],
 
 			currentProp: null as null | Prop,
+			isHandToField: false as boolean,
 			currentOffsetX: 0 as number,
 			currentOffsetY: 0 as number
 		};
@@ -46,7 +60,16 @@ export default Vue.extend({
 		game_propCreate(this: any, data: Prop) {
 			let prop = jsonToPropObject(data);
 			if (prop) this.propList.push(prop);
-			console.log(this.propList);
+		},
+		game_propDelete(this: any, data: Prop) {
+			let prop = jsonToPropObject(data);
+			if (prop)
+				this.propList.splice(
+					this.propList.findIndex(
+						(prop: Prop) => prop._id == data._id
+					),
+					1
+				);
 		},
 		game_propUpdate(this: any, data: Card) {
 			let prop = this.propList.find((prop: Prop) => prop._id == data._id);
@@ -60,14 +83,6 @@ export default Vue.extend({
 			roomName: this.getRoomName
 		});
 	},
-	// watch: {
-	// 	propList: {
-	// 		deep: true,
-	// 		handler() {
-	// 			console.log("change");
-	// 		}
-	// 	}
-	// },
 	methods: {
 		selectProp(e: MouseEvent, idx: number) {
 			if (!this.propList[idx].isGrap) {
@@ -76,16 +91,64 @@ export default Vue.extend({
 				});
 				this.currentProp = this.propList[idx];
 				this.currentProp.grap();
+
 				this.currentOffsetX = e.offsetX;
 				this.currentOffsetY = e.offsetY;
 				this.update();
 			}
 		},
+		selectPropMyHands(e: MouseEvent, idx: number) {
+			if (!this.myHandsPropList[idx].isGrap && e.button != 2) {
+				this.currentProp = this.myHandsPropList[idx];
+				this.myHandsPropList.splice(idx, 1);
+				this.propList.push(this.currentProp);
+
+				this.currentProp.position.setVector2D(
+					e.clientX - this.currentOffsetX,
+					e.clientY - this.currentOffsetY
+				);
+				this.currentProp.grap();
+				this.currentOffsetX = e.offsetX;
+				this.currentOffsetY = e.offsetY;
+				this.update();
+
+				this.isHandToField = true;
+			}
+		},
 		deselectProp(e: MouseEvent) {
 			if (this.currentProp) {
 				this.currentProp!.putDown();
+				if (this.isHandToField) {
+					this.propList.splice(
+						this.propList.findIndex(
+							prop => this.currentProp!._id == prop._id
+						),
+						1
+					);
+					this.$socket.client.emit("game_propCreate", {
+						roomName: this.getRoomName,
+						prop: this.currentProp
+					});
+				}
 				this.update();
 			}
+			this.isHandToField = false;
+			this.currentProp = null;
+		},
+		deselectPropAndAppendMyHands(e: MouseEvent) {
+			if (this.currentProp) {
+				this.currentProp!.putDown();
+				if (this.currentProp.componentName == "Card") {
+					this.myHandsPropList.push(this.currentProp as Card);
+
+					this.$socket.client.emit("game_propDelete", {
+						roomName: this.getRoomName,
+						prop: this.currentProp
+					});
+				}
+				this.update();
+			}
+			this.isHandToField = false;
 			this.currentProp = null;
 		},
 		moveMouse(e: MouseEvent) {
@@ -127,6 +190,14 @@ export default Vue.extend({
 			});
 		}
 	},
+	watch: {
+		myHandsPropList() {
+			this.myHandsPropList.forEach((card, idx) => {
+				let len = this.myHandsPropList.length;
+				card.position.setVector2D(idx * card.size.x, -card.size.y / 2);
+			});
+		}
+	},
 	computed: {
 		getRoomName(): string {
 			return this.$route.params.roomName;
@@ -137,10 +208,29 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .room {
-	user-select: none;
-	touch-action: none;
 	width: 100vw;
 	height: 100vh;
+}
+.room__props {
+	user-select: none;
+	touch-action: none;
+	width: 100%;
+	height: 100%;
 	position: relative;
+	overflow: hidden;
+}
+.room__myhand {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	width: 800px;
+	height: 100px;
+
+	border: 1px solid grey;
+	background: none;
+
+	z-index: 10000;
 }
 </style>
