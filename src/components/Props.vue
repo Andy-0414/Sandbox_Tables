@@ -1,5 +1,5 @@
 <template>
-	<Prop @dblclick="pop" class="props" v-model="propData" v-on="$listeners">
+	<Prop @dblclick="pop" class="props" :class="{'card':getTopPropType=='Card'}" v-model="propData" v-on="$listeners">
 		<template slot="content">x{{propData.props.length}}</template>
 		<template slot="menu">
 			<div class="prop__menu__item" @click="reverseAll">전부뒤집기</div>
@@ -84,6 +84,11 @@ export default Vue.extend({
 	computed: {
 		getRoomName(): string {
 			return this.$route.params.roomName;
+		},
+		getTopPropType(): string {
+			let top: Prop | undefined = this.propData.getTop();
+			if (top) return this.propData.getTop()!.componentName;
+			else return "";
 		}
 	}
 });
@@ -96,5 +101,9 @@ export default Vue.extend({
 	align-items: center;
 	font-size: 2em;
 	color: #36afff;
+}
+.card {
+	background-color: white;
+	border-radius: 5px;
 }
 </style>

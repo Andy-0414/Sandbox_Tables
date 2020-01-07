@@ -1,5 +1,10 @@
 <template>
-	<Prop @dblclick="reverse" class="card" v-model="propData" v-on="$listeners">
+	<Prop
+		@dblclick="reverse"
+		:class="{'card':propData.isTrumpCard}"
+		v-model="propData"
+		v-on="$listeners"
+	>
 		<template slot="menu">
 			<div class="prop__menu__item" @click="reverse">뒤집기</div>
 		</template>

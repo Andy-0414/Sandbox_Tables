@@ -28,7 +28,16 @@ export class Props extends Prop {
 	pop(): Prop | undefined {
 		let prop = this.props.pop();
 		if (prop) {
-			Object.assign(prop.position,this.position);
+			Object.assign(prop.position, this.position);
+			return prop;
+		} else {
+			return undefined;
+		}
+	}
+	shift(): Prop | undefined {
+		let prop = this.props.shift();
+		if (prop) {
+			Object.assign(prop.position, this.position);
 			return prop;
 		} else {
 			return undefined;
@@ -38,7 +47,7 @@ export class Props extends Prop {
 		let result: Prop[] = [];
 		let prop: Prop | undefined = undefined;
 		for (let i = 0; i < count; i++) {
-			prop = this.pop();
+			prop = this.shift();
 			if (prop) {
 				prop.position.x = this.position.x + i * 20;
 				result.push(prop);
@@ -50,8 +59,14 @@ export class Props extends Prop {
 		this.props = this.props.sort(() => Math.random() - 0.5);
 	}
 
+	getTop(): Prop | undefined {
+		if (this.props.length > 0) return this.props[this.props.length - 1];
+		else return undefined;
+	}
+
 	getImage(): string {
-		if (this.props.length > 0) return this.props[this.props.length - 1].getImage();
+		let top: Prop | undefined = this.getTop();
+		if (top) return top.getImage();
 		else return "";
 	}
 }

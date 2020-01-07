@@ -1,4 +1,3 @@
-
 export class Vector2D {
 	public x: number;
 	public y: number;
@@ -106,6 +105,6 @@ export class Prop {
 		return `translate3d(${this.transform.translate3D.join("px,")}px) `;
 	}
 	getImage(): string {
-		return this.frontImage;
+		return this.frontImage || require("@/assets/none.png");
 	}
 }

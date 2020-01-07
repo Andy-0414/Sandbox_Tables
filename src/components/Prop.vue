@@ -1,5 +1,10 @@
 <template>
-	<div class="prop" v-on="$listeners" @contextmenu="toggleShowMenu">
+	<div
+		class="prop"
+		v-on="$listeners"
+		@contextmenu.capture.stop="toggleShowMenu"
+		@mouseleave="isShowMenu=false"
+	>
 		<slot name="content"></slot>
 		<div class="prop__menu" v-if="isShowMenu" @click="toggleShowMenu">
 			<div class="prop__menu__item" @click="remove">삭제</div>
@@ -43,10 +48,10 @@ export default Vue.extend({
 		render() {
 			let propElement: HTMLDivElement = this.$el as HTMLDivElement;
 			if (this.propData.isGrap) {
-				propElement.style.boxShadow = `0px 10px 5px rgba(0,0,0,0.2)`;
+				propElement.style.filter = `drop-shadow(0px 10px 5px rgba(0,0,0,0.1))`;
 				this.propData.transform.translate3D[1] = -10;
 			} else {
-				propElement.style.boxShadow = `0px 0px 5px rgba(0,0,0,0.2)`;
+				propElement.style.filter = `drop-shadow(0px 0px 5px rgba(0,0,0,0.1))`;
 				this.propData.transform.translate3D[1] = 0;
 			}
 
@@ -82,29 +87,42 @@ export default Vue.extend({
 	height: 100px;
 
 	transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1),
-		box-shadow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1);
-	background-size: cover;
-}
-.prop__menu {
-	top: 0;
-	left: 100%;
-	position: absolute;
-	width: 200px;
-	height: fit-content;
+		filter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
 
-	border-radius: 5px;
+	.prop__menu {
+		top: 0;
+		left: 100%;
+		position: absolute;
+		width: 200px;
+		height: fit-content;
 
-	box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.25);
+		border-radius: 5px;
+		overflow: hidden;
 
-	z-index: 10000;
-}
-.prop__menu__item {
-	padding: 10px;
-	background-color: white;
+		box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
 
-	font-size: 16px;
-	color: black;
+		z-index: 10000;
 
-	text-align: center;
+		.prop__menu__item {
+			padding: 10px;
+			background-color: white;
+
+			font-size: 16px;
+			color: black;
+
+			text-align: center;
+
+			border-bottom: 1px solid #eeeeee;
+		}
+		.prop__menu__item:hover {
+			background-color: #eeeeee;
+		}
+		.prop__menu__item:last-child {
+			border-bottom: none;
+		}
+	}
 }
 </style>

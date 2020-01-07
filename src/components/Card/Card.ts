@@ -3,11 +3,13 @@ import { Prop, Vector2D } from "../Prop";
 export class Card extends Prop {
 	public readonly componentName: string = "Card";
 	public isReverse: boolean = false;
+	public isTrumpCard: boolean = true;
 	private backImage: string;
 
-	constructor(frontImage: string, backImage: string, ...args: any) {
+	constructor(frontImage: string, backImage: string, isTrumpCard: boolean, ...args: any) {
 		super(frontImage, ...args);
 		this.backImage = backImage || "";
+		this.isTrumpCard = isTrumpCard;
 	}
 
 	static createTrumpCardPack(): Card[] {
@@ -16,7 +18,7 @@ export class Card extends Prop {
 		let idx = 0;
 		return shape.flatMap(shape => {
 			return num.map(num => {
-				return new Card(require(`@/assets/cards/${num}_of_${shape}.png`), require("@/assets/cards/back.png"), new Vector2D(10 * idx++, 10), new Vector2D(100, 145));
+				return new Card(require(`@/assets/cards/${num}_of_${shape}.png`), require("@/assets/cards/back.png"), true, new Vector2D(10 * idx++, 10), new Vector2D(117.75, 178.5));
 			});
 		});
 	}

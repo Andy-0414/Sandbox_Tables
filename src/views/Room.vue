@@ -6,6 +6,7 @@
 			@touchmove="moveMouse"
 			@mouseup="deselectProp"
 			@touchend="deselectProp"
+			@contextmenu.prevent="showSpawnMenu"
 			draggable="false"
 		>
 			<component
@@ -17,7 +18,6 @@
 				@touchstart="selectProp($event,idx)"
 				@stateChange="propUpdate(prop)"
 			/>
-			<button @click="createCard">카드 생성</button>
 			<div
 				class="room__myhand"
 				@mousemove="moveMouse"
@@ -37,6 +37,7 @@
 				/>
 			</div>
 		</div>
+		<SpawnMenu @createProp="createProp" v-if="isShowSpawnMenu"></SpawnMenu>
 	</div>
 </template>
 
@@ -45,6 +46,7 @@ import Vue from "vue";
 import PropComponent from "@/components/Prop.vue";
 import CardComponent from "@/components/Card/Card.vue";
 import PropsComponent from "@/components/Props.vue";
+import SpawnMenuComponent from "@/components/SpawnMenu.vue";
 import { Prop, Vector2D } from "@/components/Prop.ts";
 import { Card } from "../components/Card/Card";
 import { Props } from "../components/Props";
@@ -54,7 +56,8 @@ export default Vue.extend({
 	components: {
 		Prop: PropComponent,
 		Props: PropsComponent,
-		Card: CardComponent
+		Card: CardComponent,
+		SpawnMenu: SpawnMenuComponent
 	},
 	data() {
 		return {
@@ -64,7 +67,11 @@ export default Vue.extend({
 			currentProp: null as null | Prop,
 			isHandToField: false as boolean,
 			currentOffsetX: 0 as number,
-			currentOffsetY: 0 as number
+			currentOffsetY: 0 as number,
+
+			isShowSpawnMenu: false as boolean,
+			spawnPointX: 0 as number,
+			spawnPointY: 0 as number
 		};
 	},
 	sockets: {
@@ -100,6 +107,14 @@ export default Vue.extend({
 		});
 	},
 	methods: {
+		showSpawnMenu(e: MouseEvent | TouchEvent) {
+			this.isShowSpawnMenu = true;
+			let cursor = (e as MouseEvent).clientX
+				? (e as MouseEvent)
+				: (e as TouchEvent).touches[0];
+			this.spawnPointX = cursor.clientX;
+			this.spawnPointY = cursor.clientY;
+		},
 		selectProp(e: MouseEvent, idx: number) {
 			if (!this.propList[idx].isGrap && e.button != 2) {
 				this.propList.forEach(prop => {
@@ -142,8 +157,6 @@ export default Vue.extend({
 			}
 		},
 		deselectProp(e: MouseEvent) {
-			console.log(this.currentProp)
-
 			if (this.currentProp) {
 				this.currentProp!.putDown();
 				if (this.isHandToField) {
@@ -165,6 +178,9 @@ export default Vue.extend({
 		},
 		deselectPropAndAppendMyHands(e: MouseEvent | TouchEvent) {
 			if (this.currentProp) {
+				if (this.myHandsPropList.length >= 7) {
+					this.deselectProp(e as MouseEvent);
+				}
 				this.currentProp!.putDown();
 				if (this.currentProp.componentName == "Card") {
 					this.myHandsPropList.push(this.currentProp as Card);
@@ -211,21 +227,12 @@ export default Vue.extend({
 				prop: prop
 			});
 		},
-		createCard() {
-			// let card = new Card(
-			// 	require(`@/assets/cards/2_of_diamonds.png`),
-			// 	require("@/assets/cards/back.png"),
-			// 	new Vector2D(100, 100),
-			// 	new Vector2D(100, 145)
-			// );
-			let props = new Props(
-				Card.createTrumpCardPack(),
-				new Vector2D(100, 100),
-				new Vector2D(100, 145)
-			);
+		createProp(prop: Prop) {
+			this.isShowSpawnMenu = false;
+			prop.position.setVector2D(this.spawnPointX, this.spawnPointY);
 			this.$socket.client.emit("game_propCreate", {
 				roomName: this.getRoomName,
-				prop: props
+				prop: prop
 			});
 		}
 	},
@@ -269,11 +276,11 @@ export default Vue.extend({
 	left: 0;
 	right: 0;
 	margin: 0 auto;
-	width: 800px;
+	width: 1000px;
 	height: 100px;
 
 	border: 1px solid white;
-	background-color: rgba(255, 255, 255, 0.2);
+	background-color: rgba(255, 255, 255, 0.5);
 	border-radius: 100px 100px 0 0;
 
 	z-index: 10000;
