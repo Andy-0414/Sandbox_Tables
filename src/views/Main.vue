@@ -11,8 +11,8 @@
 				<p>({{room.userCount}}명)</p>
 			</div>
 			<div class="main__rooms__item">
-				<input type="text" v-model="roomName" @keypress.enter="joinRoom" />
-				<button @click="joinRoom">방 만들기</button>
+				<input type="text" v-model="roomName" @keypress.enter="joinRoom(roomName)" />
+				<button @click="joinRoom(roomName)">방 만들기</button>
 			</div>
 		</div>
 	</div>
@@ -42,11 +42,11 @@ export default Vue.extend({
 		this.$socket.client.emit("game_getRooms");
 	},
 	methods: {
-		joinRoom(roomName?: string) {
+		joinRoom(roomName: string) {
 			this.$router.push({
 				name: "room",
 				params: {
-					roomName: roomName || this.roomName
+					roomName: roomName
 				}
 			});
 		}
