@@ -86,13 +86,12 @@ export default Vue.extend({
 		},
 		game_propDelete(this: any, data: Prop) {
 			let prop = jsonToPropObject(data);
-			if (prop)
-				this.propList.splice(
-					this.propList.findIndex(
-						(prop: Prop) => prop._id == data._id
-					),
-					1
+			if (prop) {
+				let idx = this.propList.findIndex(
+					(prop: Prop) => prop._id == data._id
 				);
+				if (idx != -1) this.propList.splice(idx, 1);
+			}
 		},
 		game_propUpdate(this: any, data: Card) {
 			let prop = this.propList.find((prop: Prop) => prop._id == data._id);
@@ -185,6 +184,12 @@ export default Vue.extend({
 				if (this.currentProp.componentName == "Card") {
 					this.myHandsPropList.push(this.currentProp as Card);
 					if (!this.isHandToField) {
+						this.propList.splice(
+							this.propList.findIndex(
+								prop => this.currentProp!._id == prop._id
+							),
+							1
+						);
 						this.$socket.client.emit("game_propDelete", {
 							roomName: this.getRoomName,
 							prop: this.currentProp
@@ -196,9 +201,9 @@ export default Vue.extend({
 							),
 							1
 						);
+						this.update();
 					}
 				}
-				this.update();
 			}
 			this.isHandToField = false;
 			this.currentProp = null;

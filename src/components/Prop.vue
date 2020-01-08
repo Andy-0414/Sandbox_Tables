@@ -55,6 +55,7 @@ export default Vue.extend({
 				this.propData.transform.translate3D[1] = 0;
 			}
 
+			propElement.style.opacity = `${this.propData.opacity}`;
 			propElement.style.width = `${this.propData.size.x}px`;
 			propElement.style.height = `${this.propData.size.y}px`;
 			propElement.style.left = `${this.propData.position.x}px`;

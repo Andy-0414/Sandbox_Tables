@@ -45,6 +45,7 @@ export class Prop {
 	public zIndex: number = 1000;
 	public isGrap: boolean = false;
 	public transform: Transform;
+	public opacity = 1;
 
 	constructor(frontImage: string, position?: Vector2D, size?: Vector2D) {
 		this._id = Prop.createUUID();
