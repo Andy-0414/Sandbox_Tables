@@ -10,10 +10,10 @@
 				<p>{{room.roomName}}</p>
 				<p>({{room.userCount}}명)</p>
 			</div>
-			<div class="main__rooms__item">
-				<input type="text" v-model="roomName" @keypress.enter="joinRoom(roomName)" />
-				<button @click="joinRoom(roomName)">방 만들기</button>
-			</div>
+			<form class="main__rooms__item" @submit="joinRoom(roomName)">
+				<input type="text" minlength="2" required v-model="roomName" />
+				<button type="submit">방 만들기</button>
+			</form>
 		</div>
 	</div>
 </template>
