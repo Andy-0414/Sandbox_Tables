@@ -38,6 +38,7 @@
 			</div>
 		</div>
 		<SpawnMenu @createProp="createProp" v-if="isShowSpawnMenu"></SpawnMenu>
+		<ChatBox></ChatBox>
 	</div>
 </template>
 
@@ -47,6 +48,7 @@ import PropComponent from "@/components/Prop.vue";
 import CardComponent from "@/components/Card/Card.vue";
 import PropsComponent from "@/components/Props.vue";
 import SpawnMenuComponent from "@/components/SpawnMenu.vue";
+import ChatBoxComponent from "@/components/ChatBox.vue";
 import { Prop, Vector2D } from "@/components/Prop.ts";
 import { Card } from "../components/Card/Card";
 import { Props } from "../components/Props";
@@ -57,7 +59,8 @@ export default Vue.extend({
 		Prop: PropComponent,
 		Props: PropsComponent,
 		Card: CardComponent,
-		SpawnMenu: SpawnMenuComponent
+		SpawnMenu: SpawnMenuComponent,
+		ChatBox: ChatBoxComponent
 	},
 	data() {
 		return {
@@ -79,6 +82,7 @@ export default Vue.extend({
 			this.propList = data.props.map((prop: Prop) =>
 				jsonToPropObject(prop)
 			);
+			console.log(data);
 		},
 		game_propCreate(this: any, data: Prop) {
 			let prop = jsonToPropObject(data);

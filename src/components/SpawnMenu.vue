@@ -30,8 +30,8 @@
 			<div class="spawnMenu__information__config" v-if="currentItem != null">
 				<p>
 					사이즈 :
-					<input class="sizeInput" type="text" v-model="currentItem.prop.size.x" /> X
-					<input class="sizeInput" type="text" v-model="currentItem.prop.size.y" />
+					<input class="sizeInput" type="number" v-model="currentItem.prop.size.x" /> X
+					<input class="sizeInput" type="number" v-model="currentItem.prop.size.y" />
 				</p>
 				<p>
 					이미지 :
@@ -112,19 +112,19 @@ export default Vue.extend({
 	padding: 20px;
 
 	.spawnMenu__list {
-		flex: 1;
+		width: 530px;
 		background-color: #fafafa;
 		margin-right: 20px;
 
 		display: flex;
-		justify-content: center;
 		flex-wrap: wrap;
 		overflow-y: scroll;
 		.spawnMenu__list__item {
 			position: relative;
 
-			width: 600px;
-			height: 600px;
+			width: 150px;
+			height: 150px;
+			margin: 10px;
 
 			display: flex;
 			flex-direction: column;
@@ -135,12 +135,11 @@ export default Vue.extend({
 				position: relative;
 				left: 0 !important;
 				top: 0 !important;
-				max-width: 600px;
-				max-height: 600px;
+				width: 150px !important;
+				height: 150px !important;
+				background-color: unset !important;
 			}
 			.spawnMenu__list__item__name {
-				position: absolute;
-				bottom: 50px;
 				z-index: 1;
 			}
 		}
@@ -156,7 +155,7 @@ export default Vue.extend({
 			padding: 5px;
 		}
 		input.sizeInput {
-			width: 40px;
+			width: 70px;
 		}
 	}
 	.spawnMenu__information {

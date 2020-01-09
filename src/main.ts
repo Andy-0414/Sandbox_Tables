@@ -6,8 +6,8 @@ import "./registerServiceWorker";
 
 import VueSocketIOExt from "vue-socket.io-extended";
 import io from "socket.io-client";
-
-Vue.use(VueSocketIOExt, io("andy0414.com:3003"));
+let url = process.env.NODE_ENV === "production" ? "andy0414.com:3003" : "localhost:3003";
+Vue.use(VueSocketIOExt, io(url));
 Vue.config.productionTip = false;
 
 new Vue({
