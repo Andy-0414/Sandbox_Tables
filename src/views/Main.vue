@@ -1,5 +1,6 @@
 <template>
 	<div class="main">
+		<h1 class="main__title">Sandbox Tables</h1>
 		<div class="main__rooms">
 			<div
 				class="main__rooms__item"
