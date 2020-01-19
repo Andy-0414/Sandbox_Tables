@@ -63,6 +63,7 @@ export default Vue.extend({
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+    
 	.main__title {
 		font-size: 4em;
 		color: #36afff;
