@@ -60,8 +60,14 @@ export default Vue.extend({
 	width: 100vw;
 	height: 100vh;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	.main__title {
+		font-size: 4em;
+		color: #36afff;
+		margin: 40px;
+	}
 	.main__rooms {
 		width: 400px;
 		height: auto;
