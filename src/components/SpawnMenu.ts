@@ -13,6 +13,10 @@ export default function getSpawnMenuList(): SpawnMenuItem[] {
 			prop: new Props(Card.createTrumpCardPack(), new Vector2D(0, 0), new Vector2D(117.75, 178.5))
 		},
 		{
+			name: "선린 로고",
+			prop: new Prop("https://upload.wikimedia.org/wikipedia/commons/3/33/SunrinInternetHighSchool.png", new Vector2D(0, 0), new Vector2D(200, 200))
+		},
+		{
 			name: "커스텀 프롭",
 			prop: new Prop("", new Vector2D(0, 0), new Vector2D(100, 100))
 		},
