@@ -6,12 +6,12 @@ import "./registerServiceWorker";
 
 import VueSocketIOExt from "vue-socket.io-extended";
 import io from "socket.io-client";
-let url = process.env.NODE_ENV === "production" ? "andy0414.com:3003" : "localhost:3003";
+let url = process.env.NODE_ENV === "production" ? "https://sandbox-table.herokuapp.com/" : "localhost:3000";
 Vue.use(VueSocketIOExt, io(url));
 Vue.config.productionTip = false;
 
 new Vue({
 	router,
 	store,
-	render: h => h(App)
+	render: (h) => h(App),
 }).$mount("#app");
