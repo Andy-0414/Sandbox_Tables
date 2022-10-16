@@ -1,25 +1,38 @@
 # Sandbox Tables
+## 소개
 
-Play : [https://sandbox-table.herokuapp.com/](https://sandbox-table.herokuapp.com/)
+> 웹에서 실시간으로 즐길 수 있는 샌드박스 게임입니다.
 
-실시간으로 동기화되는 샌드박스형 카드게임입니다.
+- [시연 영상](https://youtu.be/pBKHO-kl_7E)
+- [데모](https://sandbox-table.herokuapp.com/)
 
-# Room
+## 기술 스택
 
-게임이 이루어지는 방입니다. 채팅과 자신의 손패가 있습니다.
+**Front-end**
 
--   우클릭 - 프롭 리스트 (프롭 리스트를 통하여 직접 프롭을 제공하거나 주어진 프롭을 가져올 수 있습니다.)
+![TypeScript](https://img.shields.io/badge/TypeScript-282C34.svg?&style=for-the-badge&logo=typescript)
+![Vue](https://img.shields.io/badge/vue-282C34.svg?&style=for-the-badge&logo=vue.js)
+![Socket.io](https://img.shields.io/badge/Socket.io-282C34?style=for-the-badge&logo=socket.io)
 
-## Prop
+**Back-end**
 
--   클릭 - 선택
--   우클릭 - 옵션
--   드래그 - 이동
+![TypeScript](https://img.shields.io/badge/TypeScript-282C34.svg?&style=for-the-badge&logo=typescript)
+![Node.js](https://img.shields.io/badge/Node.js-282C34.svg?&style=for-the-badge&logo=node.js)
+![Express](https://img.shields.io/badge/express-282C34.svg?style=for-the-badge&logo=express)
+![Socket.io](https://img.shields.io/badge/Socket.io-282C34?style=for-the-badge&logo=socket.io)
+![Webpack](https://img.shields.io/badge/webpack-282C34.svg?style=for-the-badge&logo=webpack)
 
-## Props
+## 기능 소개
 
--   더블클릭 - 프롭 한 개 꺼내기
+- 방 생성
+- 실시간 채팅
+- 실시간 테이블 연동
+- 게임
+    - 물체 생성: 빈 공간에 오른쪽 클릭
+    - 물체 들기: 왼쪽 클릭
+    - 물체 상세: 물체에 오른쪽 클릭
+    - 묶음에서 하나 꺼내기: 더블 클릭
+    - 뒤집기: 더블 클릭
 
-## Card
-
--   더블클릭 - 카드 뒤집기
+## 관련 레포지토리
+- [backend](https://github.com/Andy-0414/Sandbox_Tables_Backend)
